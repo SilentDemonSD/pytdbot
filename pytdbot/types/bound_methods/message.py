@@ -159,6 +159,25 @@ class MessageBoundMethods:
 
         return file_size
 
+    @property
+    @lru_cache(1)
+    def remote_duration(self) -> int:
+        r"""Remote media file duration in seconds as defined by the sender; 0 if unknown"""
+
+        duration = 0
+        if isinstance(self.content, pytdbot.types.MessageVideo):
+            duration = self.content.video.duration
+        elif isinstance(self.content, pytdbot.types.MessageAnimation):
+            duration = self.content.animation.duration
+        elif isinstance(self.content, pytdbot.types.MessageAudio):
+            duration = self.content.audio.duration
+        elif isinstance(self.content, pytdbot.types.MessageVoiceNote):
+            duration = self.content.voice_note.duration
+        elif isinstance(self.content, pytdbot.types.MessageVideoNote):
+            duration = self.content.video_note.duration
+
+        return duration
+
     async def mention(self, parse_mode: str = "html") -> str | None:
         r"""Get the text_mention of the message sender
 
